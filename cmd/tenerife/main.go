@@ -4,6 +4,8 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
@@ -25,15 +27,36 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", application.HomeHandler(logger))
-	r.HandleFunc("/healthz", diagnostics.HealthzHandler(logger))
+
+	r.HandleFunc("/healthz", diagnostics.LivenessHandler(logger))
+	r.HandleFunc("/readyz", diagnostics.ReadinessHandler(logger))
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	shutdown := make(chan error, 1)
 
 	server := http.Server{
-		Addr: net.JoinHostPort("", port),
+		Addr:    net.JoinHostPort("", port),
 		Handler: r,
 	}
 
-	err := server.ListenAndServe()
-	if err != nil {
-		logger.Error("Server stopped with an error: %v", err)
+	go func() {
+		err := server.ListenAndServe()
+		shutdown <- err
+	}()
+
+	select {
+	case killSignal := <-interrupt:
+		switch killSignal {
+		case os.Interrupt:
+			logger.Print("Got SIGINT...")
+		case syscall.SIGTERM:
+			logger.Print("Got SIGTERM...")
+		}
+	case <-shutdown:
+		logger.Printf("Got an error...")
 	}
+
+	//server.Shutdown()
 }
