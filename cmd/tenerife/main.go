@@ -5,14 +5,18 @@ import (
 	"net/http"
 	"os"
 
+	"upgraded-broccoli/internal/application"
+
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	os.Getenv("PORT")
-	server = http.Server{
+	port := os.Getenv("PORT")
+	r := mux.NewRouter()
+	r.HandleFunc("/", application.HomeHandler)
+	server := http.Server{
 		Addr: net.JoinHostPort("", port),
-		Handler: nil,
+		Handler: r,
 	}
-	http.ListenAndServe()
+	server.ListenAndServe()
 }
