@@ -1,4 +1,4 @@
-module upgraded-broccoli
+module github.com/gpoulter/upgraded-broccoli
 
 go 1.12
 
