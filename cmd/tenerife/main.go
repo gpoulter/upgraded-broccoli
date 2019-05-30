@@ -11,8 +11,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 
-	"upgraded-broccoli/internal/application"
-	"upgraded-broccoli/internal/diagnostics"
+	"github.com/gpoulter/upgraded-broccoli/internal/application"
+	"github.com/gpoulter/upgraded-broccoli/internal/diagnostics"
 )
 
 func main() {
