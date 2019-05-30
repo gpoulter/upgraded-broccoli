@@ -1,9 +1,12 @@
 package main
 
 import (
+	"log"
 	"net"
 	"net/http"
 	"os"
+
+	_ "net/http/pprof"
 
 	"upgraded-broccoli/internal/application"
 
@@ -18,5 +21,5 @@ func main() {
 		Addr: net.JoinHostPort("", port),
 		Handler: r,
 	}
-	server.ListenAndServe()
+	log.Println(server.ListenAndServe())
 }
