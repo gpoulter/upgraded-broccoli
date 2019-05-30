@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"upgraded-broccoli/internal/application"
+	"upgraded-broccoli/internal/diagnostics"
 )
 
 func main() {
@@ -24,6 +25,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", application.HomeHandler(logger))
+	r.HandleFunc("/healthz", diagnostics.HealthzHandler(logger))
 
 	server := http.Server{
 		Addr: net.JoinHostPort("", port),
