@@ -1,5 +1,5 @@
 PROJECT?=github.com/gpoulter/upgraded-broccoli
-VERSION?=0.0.1
+RELEASE?=0.0.1
 
 COMMIT := git-$(shell git rev-parse --short HEAD)
 BUILD_TIME := $(shell date -u '+%Y-%m-%d_%H:%M:%S')
@@ -15,4 +15,5 @@ build:
 		-o bin/tenerife ${PROJECT}/cmd/tenerife
 
 docker-build:
-	docker build -t tenerife .
+	docker build -t tenerife:${RELEASE} .
+
